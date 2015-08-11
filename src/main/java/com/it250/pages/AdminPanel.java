@@ -44,7 +44,7 @@ public class AdminPanel {
     private User userValue;
     
     @Property
-    private Room newRoom;
+    private Room newRoom, gridRoom;
     
     @Property @Persist
     private ArrayList<User> users;
@@ -99,6 +99,12 @@ public class AdminPanel {
     @CommitAfter
     Object onSuccessFromAddUser(){
         userDao.add(newUser);
+        return this;
+    }
+    
+    @CommitAfter
+    public Object onActionFromDeleteRoom(int id){
+        roomDao.remove(id, Room.class);
         return this;
     }
     

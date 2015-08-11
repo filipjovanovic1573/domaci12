@@ -2,6 +2,7 @@
       xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
       xmlns:p="tapestry:parameter">
 
+    <t:info/><br />
     <div class="span4 offset3">
         <t:beaneditform t:id="addUser" object="newUser" exclude="id" t:submitlabel="Add user"/>
     </div>
@@ -16,6 +17,13 @@
         </t:beaneditform>
     </div>
 
-    <t:grid source="rooms"/>
+    <t:grid source="rooms" row="gridRoom" add="remove">
+        <p:removeHeader>
+            Obrisi
+        </p:removeHeader>
+        <p:removeCell>
+            <t:actionlink t:id="deleteRoom" t:context="gridRoom.id">Obrisi</t:actionlink>
+        </p:removeCell>
+    </t:grid>
 
 </html>

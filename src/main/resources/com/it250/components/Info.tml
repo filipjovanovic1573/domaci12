@@ -1,0 +1,7 @@
+<html xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd">
+    <t:content>
+        <div style="font-weight: bold; font-size: medium" class="text-center">
+            <strong><em>${info}</em></strong>
+        </div>
+    </t:content>
+</html>
