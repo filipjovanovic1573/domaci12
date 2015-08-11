@@ -17,7 +17,19 @@
         </t:beaneditform>
     </div>
 
-    <t:grid source="rooms" row="gridRoom" add="remove">
+    <t:grid source="rooms" row="gridRoom" add="userId, edit, remove">
+        <p:userIdHeader>
+            Korisnik
+        </p:userIdHeader>
+        <p:userIdCell>
+            <p>${gridRoom.userId}</p>
+        </p:userIdCell>>
+        <p:editHeader>
+            Izmeni
+        </p:editHeader>
+        <p:editCell>
+            <t:actionlink t:id="editRoom" t:context="gridRoom">Izmeni</t:actionlink>
+        </p:editCell>
         <p:removeHeader>
             Obrisi
         </p:removeHeader>

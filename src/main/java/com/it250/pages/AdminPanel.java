@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.annotation.security.RolesAllowed;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.InjectComponent;
+import org.apache.tapestry5.annotations.PageLoaded;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.BeanEditForm;
@@ -37,24 +38,32 @@ public class AdminPanel {
     @Inject
     private RoomDao roomDao;
     
-    @Property
+    @Property @Persist
     private User newUser;
     
     @Property
     private User userValue;
     
-    @Property
-    private Room newRoom, gridRoom;
-    
     @Property @Persist
+    private Room newRoom; 
+            
+    @Property        
+    private Room gridRoom;
+    
+    @Property
     private ArrayList<User> users;
     
-    @Property @Persist
+    @Property
     private ArrayList<Room> rooms;
     
     private User tmp;
     
     void onActivate(){
+        
+    }
+    
+    @PageLoaded
+    void createLocalCache(){
         tmp = new User();
         if(users == null){
             users = new ArrayList<User>();
@@ -92,19 +101,33 @@ public class AdminPanel {
     @CommitAfter
     Object onSuccessFromAddRoom(){
         newRoom.setUserId(userValue);
-        roomDao.add(newRoom);
+        
+        if(rooms.contains(newRoom))
+            rooms.remove(newRoom);
+        
+        rooms.add(roomDao.update(newRoom));
+        newRoom = new Room();
         return this;
     }
     
     @CommitAfter
     Object onSuccessFromAddUser(){
         userDao.add(newUser);
+        users.add(newUser);
+        newUser = new User();
         return this;
     }
     
     @CommitAfter
     public Object onActionFromDeleteRoom(int id){
+        rooms.remove(roomDao.findById(id));
         roomDao.remove(id, Room.class);
+        return this;
+    }
+    
+    public Object onActionFromEditRoom(Room r){
+        userValue = r.getUserId();
+        newRoom = r;
         return this;
     }
     
