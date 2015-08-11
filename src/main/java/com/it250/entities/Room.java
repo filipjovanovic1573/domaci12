@@ -27,13 +27,8 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 @Table(name = "room")
 @NamedQueries({
     @NamedQuery(name = "Room.findAll", query = "SELECT r FROM Room r")})
-public class Room implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+public class Room extends AbstractEntity {
+   
     @Column(name = "floor")
     private Integer floor;
     @Column(name = "tv")

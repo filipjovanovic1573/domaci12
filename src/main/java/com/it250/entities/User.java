@@ -6,7 +6,6 @@
 package com.it250.entities;
 
 import com.it250.other.Role;
-import java.io.Serializable;
 import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -31,13 +30,7 @@ import org.apache.tapestry5.ioc.annotations.Inject;
 @Table(name = "user")
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")})
-public class User implements Serializable {
-    private static final long serialVersionUID = 1L;
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Basic(optional = false)
-    @Column(name = "id")
-    private Integer id;
+public class User extends AbstractEntity{
     @Column(name = "username")
     private String username;
     @Column(name = "password")

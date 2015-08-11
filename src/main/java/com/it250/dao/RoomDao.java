@@ -5,14 +5,10 @@
  */
 package com.it250.dao;
 
-import com.it250.entities.Room;
-import java.util.List;
-
 /**
  *
  * @author Workbench
  */
-public interface RoomDao {
-    public List findAll();
-    public void addRoom(Room r);
+public interface RoomDao extends GenericDao{
+    
 }

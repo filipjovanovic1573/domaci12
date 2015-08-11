@@ -5,7 +5,6 @@
  */
 package com.it250.pages;
 
-import com.it250.dao.GuestDao;
 import com.it250.dao.RoomDao;
 import com.it250.dao.UserDao;
 import com.it250.entities.Room;
@@ -38,9 +37,6 @@ public class AdminPanel {
     @Inject
     private RoomDao roomDao;
     
-    @Inject
-    private GuestDao guestDao;
-    
     @Property
     private User newUser;
     
@@ -64,13 +60,13 @@ public class AdminPanel {
             users = new ArrayList<User>();
         }
         
-        users = (ArrayList<User> )userDao.findAll();
+        users = (ArrayList<User> )userDao.findAll(User.class);
         
         if(rooms == null){
             rooms = new ArrayList<Room>();
         }
         
-        rooms = (ArrayList<Room>)roomDao.findAll();
+        rooms = (ArrayList<Room>)roomDao.findAll(Room.class);
     }
     
     
@@ -78,6 +74,11 @@ public class AdminPanel {
         if(newRoom.getFloor() == null){
             addRoom.recordError("Unesi sprat");
         }
+        
+        if(userValue == null){
+            addRoom.recordError("Iyaberi korisnika");
+        }
+        
     }
     
     void onValidateFromAddUser(){
@@ -91,7 +92,7 @@ public class AdminPanel {
     @CommitAfter
     Object onSuccessFromAddRoom(){
         newRoom.setUserId(userValue);
-        roomDao.addRoom(newRoom);
+        roomDao.add(newRoom);
         return this;
     }
     

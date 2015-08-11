@@ -6,38 +6,21 @@
 package com.it250.dao;
 
 import com.it250.entities.User;
-import java.util.List;
-import org.apache.tapestry5.ioc.annotations.Inject;
-import org.hibernate.Session;
 import org.hibernate.criterion.Restrictions;
 
 /**
  *
  * @author Workbench
  */
-public class UserDaoImpl implements UserDao{
+public class UserDaoImpl extends GenericDaoImpl implements UserDao{
     
-    @Inject
-    private Session session;
-
     @Override
     public User findById(int id) {
         return (User) session.createCriteria(User.class).add(Restrictions.eq("id", id)).uniqueResult();
     }
 
     @Override
-    public List<User> findAll() {
-        return session.createCriteria(User.class).list();
-    }
-
-    @Override
     public User checkUser(String username, String password) {
         return (User) session.createCriteria(User.class).add(Restrictions.eq("username", username)).add(Restrictions.eq("password", password)).uniqueResult();
     }
-
-    @Override
-    public void add(User u) {
-        session.persist(u);
-    }
-    
 }

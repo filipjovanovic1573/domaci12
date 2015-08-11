@@ -1,7 +1,7 @@
 package com.it250.services;
 
-import com.it250.dao.GuestDao;
-import com.it250.dao.GuestDaoImpl;
+import com.it250.dao.GenericDao;
+import com.it250.dao.GenericDaoImpl;
 import com.it250.dao.RoomDao;
 import com.it250.dao.RoomDaoImpl;
 import com.it250.dao.UserDao;
@@ -28,7 +28,7 @@ public class AppModule
     {
         binder.bind(UserDao.class, UserDaoImpl.class);
         binder.bind(RoomDao.class, RoomDaoImpl.class);
-        binder.bind(GuestDao.class, GuestDaoImpl.class);
+        binder.bind(GenericDao.class, GenericDaoImpl.class);
         // binder.bind(MyServiceInterface.class, MyServiceImpl.class);
 
         // Make bind() calls on the binder object to define most IoC services.

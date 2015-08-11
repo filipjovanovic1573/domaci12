@@ -6,16 +6,13 @@
 package com.it250.dao;
 
 import com.it250.entities.User;
-import java.util.List;
 
 /**
  *
  * @author Workbench
  */
-public interface UserDao {
+public interface UserDao extends GenericDao{
     
-    public List<User> findAll();
     public User findById(int id);
     public User checkUser(String username, String password);
-    public void add(User u);
 }
