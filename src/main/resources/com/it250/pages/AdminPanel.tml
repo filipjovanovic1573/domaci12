@@ -1,0 +1,21 @@
+<html t:type="layout" title="Admin panel"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_4.xsd"
+      xmlns:p="tapestry:parameter">
+
+    <div class="span4 offset3">
+        <t:beaneditform t:id="addUser" object="newUser" exclude="id" t:submitlabel="Add user"/>
+    </div>
+
+    <t:grid source="users"/>
+
+    <div class="span4 offset3">
+        <t:beaneditform t:id="addRoom" object="newRoom" add="userId" exclude="id" t:submitlabel="Add room">
+            <p:userId>
+                <input t:id="select" t:type="select" value="userValue" ehcoder="encoder" model="users"/>
+            </p:userId>
+        </t:beaneditform>
+    </div>
+
+    <t:grid source="rooms"/>
+
+</html>

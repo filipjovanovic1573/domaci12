@@ -1,0 +1,11 @@
+<html t:type="layout" title="it250dz com.example"
+      xmlns:t="http://tapestry.apache.org/schema/tapestry_5_3.xsd"
+      xmlns:p="tapestry:parameter">
+
+<div class="row">
+    <div class="span4 offset3">
+        <t:beaneditform t:id="login" object="logUser" exclude="id, role" t:submitlabel="Login"/>
+    </div>
+</div>
+
+</html>
