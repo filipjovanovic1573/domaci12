@@ -12,126 +12,151 @@ import com.it250.entities.User;
 import com.it250.services.ProtectedPage;
 import java.util.ArrayList;
 import javax.annotation.security.RolesAllowed;
+import org.apache.tapestry5.ComponentResources;
 import org.apache.tapestry5.ValueEncoder;
 import org.apache.tapestry5.annotations.InjectComponent;
-import org.apache.tapestry5.annotations.PageLoaded;
+import org.apache.tapestry5.annotations.OnEvent;
 import org.apache.tapestry5.annotations.Persist;
 import org.apache.tapestry5.annotations.Property;
 import org.apache.tapestry5.corelib.components.BeanEditForm;
+import org.apache.tapestry5.corelib.components.Zone;
 import org.apache.tapestry5.hibernate.annotations.CommitAfter;
 import org.apache.tapestry5.ioc.annotations.Inject;
+import org.apache.tapestry5.json.JSONLiteral;
+import org.apache.tapestry5.services.Request;
+import org.apache.tapestry5.services.ajax.AjaxResponseRenderer;
+import org.got5.tapestry5.jquery.components.InPlaceEditor;
+import org.json.JSONObject;
 
 /**
  *
  * @author Workbench
  */
 @ProtectedPage
-@RolesAllowed(value={"Admin"})
+@RolesAllowed(value = {"Admin"})
 public class AdminPanel {
-    
+
     @InjectComponent
     private BeanEditForm addUser, addRoom;
-    
+
     @Inject
     private UserDao userDao;
-    
+
     @Inject
     private RoomDao roomDao;
-    
-    @Property @Persist
+
+    @Property
+    @Persist
     private User newUser;
-    
+
     @Property
     private User userValue;
-    
-    @Property @Persist
-    private Room newRoom; 
-            
-    @Property        
-    private Room gridRoom;
-    
+
+    @Property
+    private Room newRoom, gridRoom;
+
     @Property
     private ArrayList<User> users;
-    
+
     @Property
+    @Persist
     private ArrayList<Room> rooms;
-    
-    private User tmp;
-    
-    void onActivate(){
-        
-    }
-    
-    @PageLoaded
-    void createLocalCache(){
-        tmp = new User();
-        if(users == null){
-            users = new ArrayList<User>();
-        }
-        
-        users = (ArrayList<User> )userDao.findAll(User.class);
-        
-        if(rooms == null){
+
+    @InjectComponent
+    private Zone formZone;
+
+    @InjectComponent
+    private Zone gridZone;
+
+    @Inject
+    private Request request;
+
+    @Inject
+    private ComponentResources resources;
+
+    @Inject
+    private AjaxResponseRenderer renderer;
+
+    @Property
+    private User ajaxUser;
+
+    void onActivate() {
+        users = new ArrayList<User>();
+
+        users = (ArrayList<User>) userDao.findAll(User.class);
+
+        if (rooms == null) {
             rooms = new ArrayList<Room>();
         }
-        
-        rooms = (ArrayList<Room>)roomDao.findAll(Room.class);
+
+        rooms = (ArrayList<Room>) roomDao.findAll(Room.class);
     }
-    
-    
-    void onValidateFromAddRoom(){
-        if(newRoom.getFloor() == null){
+
+    void onValidateFromAddRoom() {
+        if (newRoom.getFloor() == null) {
             addRoom.recordError("Unesi sprat");
         }
-        
-        if(userValue == null){
+
+        if (userValue == null) {
             addRoom.recordError("Iyaberi korisnika");
         }
-        
+
     }
-    
-    void onValidateFromAddUser(){
-        tmp = userDao.checkUser(newUser.getUsername(), newUser.getPassword());
-        
-        if(tmp != null){
+
+    void onValidateFromAddUser() {
+        if (userDao.checkUser(newUser.getUsername(), newUser.getPassword()) != null) {
             addUser.recordError("Korisnik postoji");
         }
     }
-    
+
     @CommitAfter
-    Object onSuccessFromAddRoom(){
+    Object onSuccessFromAddRoom() {
         newRoom.setUserId(userValue);
-        
-        if(rooms.contains(newRoom))
-            rooms.remove(newRoom);
-        
-        rooms.add(roomDao.update(newRoom));
-        newRoom = new Room();
+        roomDao.add(newRoom);
         return this;
     }
-    
+
     @CommitAfter
-    Object onSuccessFromAddUser(){
+    Object onSuccessFromAddUser() {
         userDao.add(newUser);
-        users.add(newUser);
+        users = (ArrayList<User>) userDao.findAll(User.class);
         newUser = new User();
-        return this;
+        if (request.isXHR()) {
+            renderer.addRender(gridZone).addRender(formZone);
+        }
+
+        return request.isXHR() ? gridZone.getBody() : null;
     }
-    
+
     @CommitAfter
-    public Object onActionFromDeleteRoom(int id){
-        rooms.remove(roomDao.findById(id));
+    @OnEvent(component = "username", value = InPlaceEditor.SAVE_EVENT)
+    void setUsername(int id, String value) {
+        User u = userDao.findById(id);
+        u.setUsername(value);
+        userDao.merge(u);
+    }
+
+    /*public JSONObject getOptions() {
+        JSONObject params = new JSONObject();
+        Object[] context = new Object[]{currentIndex};
+        String listenerURI = _componentResources.createEventLink("refresh", context).toAbsoluteURI(false);
+        String zoneID = updateZone.getClientId();
+        params.put("tooltip", "Cliquer pour �diter");
+        params.put("callback", new JSONLiteral("function(value, settings)"
+                + "{"
+                + " var zoneElement = $('#" + zoneID + "');"
+                + " zoneElement.tapestryZone('update',{url : '" + listenerURI + "',params : {id:" + currentIndex + "} });"
+                + "}"));
+        return params;
+    }*/
+
+    @CommitAfter
+    public Object onActionFromDeleteRoom(int id) {
         roomDao.remove(id, Room.class);
         return this;
     }
-    
-    public Object onActionFromEditRoom(Room r){
-        userValue = r.getUserId();
-        newRoom = r;
-        return this;
-    }
-    
-     public ValueEncoder getEncoder(){
+
+    public ValueEncoder getEncoder() {
         return new ValueEncoder<User>() {
 
             @Override
@@ -145,5 +170,5 @@ public class AdminPanel {
             }
         };
     }
-   
+
 }

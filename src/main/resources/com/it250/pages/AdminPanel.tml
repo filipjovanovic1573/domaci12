@@ -3,11 +3,22 @@
       xmlns:p="tapestry:parameter">
 
     <t:info/><br />
-    <div class="span4 offset3">
-        <t:beaneditform t:id="addUser" object="newUser" exclude="id" t:submitlabel="Add user"/>
-    </div>
 
-    <t:grid source="users"/>
+    <t:zone t:id="formZone">
+        <div class="span4 offset3">
+            <t:beaneditform t:id="addUser" object="newUser" exclude="id" t:submitlabel="Add user"/>
+        </div>
+    </t:zone>
+    <t:zone t:id="gridZone">
+        <t:grid source="users" row="ajaxUser" t:inplace="true" add="edit">
+            <p:usernameHeader>
+                Username (inPlace edit)
+            </p:usernameHeader>
+            <p:usernameCell>
+                <div t:id="username" value="ajaxUser.username"  t:type="jquery/inPlaceEditor" t:context="ajaxUser.id" />
+            </p:usernameCell>
+        </t:grid>
+    </t:zone>
 
     <div class="span4 offset3">
         <t:beaneditform t:id="addRoom" object="newRoom" add="userId" exclude="id" t:submitlabel="Add room">
